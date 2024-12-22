@@ -38,9 +38,18 @@ class Book(models.Model):
         max_length=1000,
         help_text="Enter a brief description of the book"
     )
-    isbn = models.CharField('ISBN', max_length=13, unique=True, 
-        help_text='13 Character <a href="https://www.isbn-international.org/content/what-isbn">ISBN number</a>')
+    isbn = models.CharField(
+        'ISBN', 
+        max_length=13, 
+        unique=True, 
+        help_text='13 Character <a href="https://www.isbn-international.org/content/what-isbn">ISBN number</a>'
+    )
     genre = models.ManyToManyField(Genre, help_text='Select genre for this book')
+    language = models.ForeignKey(
+        'Language',
+        on_delete=models.SET_NULL, 
+        null=True
+    )
 
     def __str__(self):
         """String represting the Model object."""
@@ -101,6 +110,27 @@ class Author(models.Model):
         """String for representing the Model object."""
         return f'{self.last_name}, {self.first_name}'
 
+class Language(models.Model):
+    """Model represting a language."""
+    name = models.CharField(
+        max_length=100,
+        unique=True,
+        help_text="Enter a book natural language (e.g. English, Nepali etc.)."
+    )
 
-
-
+    def __str__(self):
+        """String for representing Model object."""
+        return self.name
+    
+    def get_absolute_url(self):
+        """Return the url to access a particular genre instance."""
+        return reverse('language-detail', args=[str(self.id)])
+    
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                Lower('name'),
+                name='language_name_case_insensitive_unique',
+                violation_error_message="Language already exists (case insensitive match)"
+            ),
+        ]
