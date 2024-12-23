@@ -51,6 +51,11 @@ class Book(models.Model):
         null=True
     )
 
+    def display_genre(self):
+        """Creating a string for the Genre. This is required to display genre in admin page."""
+        return ', '.join([genre.name for genre in self.genre.all()[:3]])
+    display_genre.short_description = 'Genre'
+
     def __str__(self):
         """String represting the Model object."""
         return self.title
@@ -72,7 +77,7 @@ class BookInstance(models.Model):
 
     LOAN_STATUS = (
         ('m', 'Maintenance'),
-        ('o', 'On load'),
+        ('o', 'On loan'),
         ('a', 'Available'),
         ('r', 'Reserved'),
     )
