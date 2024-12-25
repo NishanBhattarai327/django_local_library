@@ -2,7 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from .models import Book, BookInstance, Genre, Language, Author
-from django.views import generic
+from django.views import generic, View
+
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 def index(request):
@@ -31,7 +33,22 @@ def index(request):
 
     return render(request, 'index.html', context=context)
 
-class BookListView(generic.ListView):
+class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
+    '''Generic class-based view listing books on loan to current user'''
+    model = BookInstance
+    template_name = 'catalog/bookinstance_list_borrowed_user.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return (
+            BookInstance.objects.filter(borrower=self.request.user)
+            .filter(status__exact='o')
+            .order_by('due_back')
+        )
+
+class BookListView(LoginRequiredMixin, generic.ListView):
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
     model = Book
     paginate_by = 5
 

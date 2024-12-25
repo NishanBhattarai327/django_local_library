@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Author: {{ author.firt_name }} {{ author.last_name }}</h1>
+  <h1>Author: {{ author.first_name }} {{ author.last_name }}</h1>
 
   <p>({{author.date_of_birth}} - {{author.date_of_death|default_if_none:""}})</p>
   <br>
