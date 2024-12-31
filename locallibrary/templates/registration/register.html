@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Register User{% endblock %}
+
+{% block content %}
+<h1>Register an accout !!!</h1>
+<form method="post">
+    {% csrf_token %}
+    {{form}}
+    <button class="btn btn-primary" type="submit">Register</button>
+</form>
+
+<p>Have an account? </p>
+<a class='btn btn-primary' href="{% url 'login' %}">Login</a>
+{% endblock %}

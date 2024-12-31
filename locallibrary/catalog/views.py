@@ -12,6 +12,23 @@ from django.urls import reverse
 import datetime
 from django.contrib.auth.decorators import login_required, permission_required
 
+
+from .forms import UserRegistrationForm
+from django.contrib.auth import login
+def register(request):
+    if request.method == "POST":
+        print("register posted::::::::::::")
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password1'])
+            user.save()
+            login(request, user)
+            return HttpResponseRedirect(reverse('books'))
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'registration/register.html', {'form' : form})
+
 @login_required
 @permission_required('catalog.can_mark_returned', raise_exception=True)
 def renew_book_librarian(request, pk):
@@ -167,3 +184,4 @@ class BookDelete(PermissionRequiredMixin, DeleteView):
             return HttpResponseRedirect(
                 reverse('book-delete', kwargs={'pk': self.object.pk})
             )
+

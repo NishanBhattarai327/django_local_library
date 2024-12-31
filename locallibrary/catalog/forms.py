@@ -45,3 +45,13 @@ class RenewBookModelForm(ModelForm):
         fields = ['due_back']
         labels = {'due_back': _('Renewal date')}
         help_text = {'due_back': _('Enter a date between now and 4 weeks (default 3).')}
+
+
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+class UserRegistrationForm(UserCreationForm):
+    email = forms.EmailInput()
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
